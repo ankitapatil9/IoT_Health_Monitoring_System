@@ -1,0 +1,36 @@
+{
+    "model_type": "1D-CNN",
+    "input_shape": [
+        256,
+        1
+    ],
+    "num_classes": 2,
+    "classes": [
+        "NORMAL",
+        "ABNORMAL"
+    ],
+    "total_parameters": 122145,
+    "trainable_parameters": 121121,
+    "training_epochs_run": 15,
+    "best_epoch": 5,
+    "best_val_loss": 0.08977217972278595,
+    "best_val_accuracy": 0.9848219156265259,
+    "class_weights_used": {
+        "0": 0.561254,
+        "1": 4.581393
+    },
+    "test_metrics": {
+        "accuracy": 0.7327539009033671,
+        "precision": 0.44937410869909683,
+        "recall_sensitivity": 0.6208859373859739,
+        "specificity": 0.7670130740864901,
+        "f1_score": 0.5213874249295257,
+        "roc_auc": 0.7936079838179402,
+        "confusion_matrix": {
+            "tn": 34320,
+            "fp": 10425,
+            "fn": 5195,
+            "tp": 8508
+        }
+    }
+}

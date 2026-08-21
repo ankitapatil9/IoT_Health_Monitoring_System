@@ -1,0 +1,128 @@
+{
+    "sampling_frequency_hz": 360.0,
+    "window_size_samples": 256,
+    "pre_peak_samples": 100,
+    "post_peak_samples": 156,
+    "bandpass_lowcut_hz": 0.5,
+    "bandpass_highcut_hz": 45.0,
+    "butter_order": 3,
+    "normalization": "z_score",
+    "aami_5class_mapping": {
+        "N": "N",
+        "L": "N",
+        "R": "N",
+        "e": "N",
+        "j": "N",
+        "B": "N",
+        "A": "S",
+        "a": "S",
+        "J": "S",
+        "S": "S",
+        "V": "V",
+        "E": "V",
+        "F": "F",
+        "/": "Q",
+        "f": "Q",
+        "Q": "Q",
+        "?": "Q"
+    },
+    "class_to_int_5class": {
+        "N": 0,
+        "S": 1,
+        "V": 2,
+        "F": 3,
+        "Q": 4
+    },
+    "int_to_class_5class": {
+        "0": "N",
+        "1": "S",
+        "2": "V",
+        "3": "F",
+        "4": "Q"
+    },
+    "class_to_int_binary": {
+        "NORMAL": 0,
+        "ABNORMAL": 1
+    },
+    "int_to_class_binary": {
+        "0": "NORMAL",
+        "1": "ABNORMAL"
+    },
+    "excluded_annotations": {
+        "+": "Rhythm change",
+        "~": "Signal quality change / artifact",
+        "!": "Ventricular flutter wave",
+        "\"": "Comment annotation",
+        "x": "Non-conducted P-wave (blocked APC)",
+        "|": "Isolated QRS-like artifact",
+        "[": "Start of ventricular flutter/fibrillation",
+        "]": "End of ventricular flutter/fibrillation"
+    },
+    "train_record_ids": [
+        "101",
+        "106",
+        "108",
+        "109",
+        "112",
+        "114",
+        "116",
+        "118",
+        "119",
+        "124",
+        "201",
+        "203",
+        "207",
+        "208",
+        "209",
+        "215",
+        "220",
+        "230"
+    ],
+    "val_record_ids": [
+        "115",
+        "122",
+        "205",
+        "223"
+    ],
+    "test_record_ids": [
+        "100",
+        "103",
+        "105",
+        "111",
+        "113",
+        "117",
+        "121",
+        "123",
+        "200",
+        "202",
+        "210",
+        "212",
+        "213",
+        "214",
+        "219",
+        "221",
+        "222",
+        "228",
+        "231",
+        "232",
+        "233",
+        "234",
+        "102",
+        "104",
+        "107",
+        "217"
+    ],
+    "class_weights": {
+        "binary": {
+            "0": 0.5612535999565288,
+            "1": 4.581392770015524
+        },
+        "5class": {
+            "0": 0.22450144588947296,
+            "1": 9.519585609436035,
+            "2": 2.547163963317871,
+            "3": 21.24164581298828,
+            "4": 1032.875
+        }
+    }
+}
