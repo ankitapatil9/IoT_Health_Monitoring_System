@@ -26,3 +26,10 @@ dataset/
 # Temporary files
 *.log
 *.tmp
+# Local application database
+backend/healthsense.db
+
+# Local ML datasets
+ml/data/train_data.npz
+ml/data/val_data.npz
+ml/data/test_data.npz

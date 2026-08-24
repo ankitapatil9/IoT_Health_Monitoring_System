@@ -1,0 +1,127 @@
+{
+    "model_type": "1D-CNN-Optimized",
+    "saved_model_path": "ml/models/ecg_model_optimized.keras",
+    "total_parameters": 122145,
+    "trainable_parameters": 121121,
+    "training_configuration": {
+        "initial_learning_rate": 0.0008,
+        "batch_size": 128,
+        "max_epochs": 30,
+        "epochs_run": 14,
+        "optimizer": "Adam",
+        "class_weights": {
+            "0": 0.561254,
+            "1": 4.810462
+        },
+        "data_augmentation": "Conservative (scale 0.97-1.03, jitter +/-2, noise std 0.006, train only)"
+    },
+    "validation_threshold_tuning": [
+        {
+            "threshold": 0.3,
+            "val_accuracy": 0.9836861125451729,
+            "val_precision": 0.9355992844364938,
+            "val_recall_sensitivity": 0.8108527131782945,
+            "val_specificity": 0.9960176991150442,
+            "val_f1_score": 0.8687707641196013
+        },
+        {
+            "threshold": 0.35,
+            "val_accuracy": 0.9833763551884357,
+            "val_precision": 0.9448529411764706,
+            "val_recall_sensitivity": 0.7968992248062016,
+            "val_specificity": 0.9966814159292036,
+            "val_f1_score": 0.864592094196804
+        },
+        {
+            "threshold": 0.4,
+            "val_accuracy": 0.9830665978316985,
+            "val_precision": 0.9529190207156308,
+            "val_recall_sensitivity": 0.7844961240310078,
+            "val_specificity": 0.9972345132743363,
+            "val_f1_score": 0.8605442176870748
+        },
+        {
+            "threshold": 0.45,
+            "val_accuracy": 0.9831698502839442,
+            "val_precision": 0.9599236641221374,
+            "val_recall_sensitivity": 0.7798449612403101,
+            "val_specificity": 0.9976769911504425,
+            "val_f1_score": 0.8605645851154833
+        },
+        {
+            "threshold": 0.5,
+            "val_accuracy": 0.9823438306659783,
+            "val_precision": 0.962890625,
+            "val_recall_sensitivity": 0.7643410852713178,
+            "val_specificity": 0.9978982300884955,
+            "val_f1_score": 0.8522039757994814
+        },
+        {
+            "threshold": 0.55,
+            "val_accuracy": 0.9814145585957667,
+            "val_precision": 0.9640718562874252,
+            "val_recall_sensitivity": 0.7488372093023256,
+            "val_specificity": 0.9980088495575221,
+            "val_f1_score": 0.8429319371727748
+        },
+        {
+            "threshold": 0.6,
+            "val_accuracy": 0.9801755291688178,
+            "val_precision": 0.9650924024640657,
+            "val_recall_sensitivity": 0.7286821705426356,
+            "val_specificity": 0.9981194690265487,
+            "val_f1_score": 0.8303886925795053
+        },
+        {
+            "threshold": 0.65,
+            "val_accuracy": 0.9791430046463604,
+            "val_precision": 0.9682875264270613,
+            "val_recall_sensitivity": 0.710077519379845,
+            "val_specificity": 0.9983407079646017,
+            "val_f1_score": 0.8193202146690519
+        },
+        {
+            "threshold": 0.7,
+            "val_accuracy": 0.9779039752194114,
+            "val_precision": 0.9715536105032823,
+            "val_recall_sensitivity": 0.6883720930232559,
+            "val_specificity": 0.9985619469026549,
+            "val_f1_score": 0.8058076225045372
+        }
+    ],
+    "selected_threshold": 0.3,
+    "validation_metrics_at_selected_threshold": {
+        "val_accuracy": 0.9836861125451729,
+        "val_precision": 0.9355992844364938,
+        "val_recall_sensitivity": 0.8108527131782945,
+        "val_specificity": 0.9960176991150442,
+        "val_f1_score": 0.8687707641196013
+    },
+    "test_metrics": {
+        "accuracy": 0.7902408978921435,
+        "precision": 0.5502752421434046,
+        "recall_sensitivity": 0.5762971612055754,
+        "specificity": 0.8557604201586769,
+        "f1_score": 0.5629856704926214,
+        "roc_auc": 0.805615952102742,
+        "confusion_matrix": {
+            "tn": 38291,
+            "fp": 6454,
+            "fn": 5806,
+            "tp": 7897
+        }
+    },
+    "comparison_with_baseline": {
+        "delta_accuracy_pp": 5.748699698877635,
+        "delta_recall_pp": -4.458877618039847,
+        "delta_specificity_pp": 8.87473460721868,
+        "delta_precision_pp": 10.09011334443078,
+        "delta_f1": 0.04159824556309566,
+        "delta_roc_auc": 0.012007968284801773,
+        "delta_tp": -611,
+        "delta_fp": -3971,
+        "delta_fn": 611,
+        "delta_tn": 3971,
+        "is_genuinely_improved": true
+    }
+}

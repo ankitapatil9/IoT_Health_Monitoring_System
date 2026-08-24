@@ -1,0 +1,86 @@
+{
+    "total_valid_beats": 109448,
+    "total_boundary_removals": 46,
+    "global_exclusions": {
+        "+": 1291,
+        "~": 616,
+        "|": 132,
+        "x": 193,
+        "[": 6,
+        "!": 472,
+        "]": 6,
+        "\"": 437
+    },
+    "train": {
+        "num_records": 18,
+        "num_samples": 41315,
+        "boundary_removals": 16,
+        "binary_dist": {
+            "NORMAL": 36806,
+            "ABNORMAL": 4509
+        },
+        "5class_dist": {
+            "N": 36806,
+            "S": 868,
+            "V": 3244,
+            "F": 389,
+            "Q": 8
+        }
+    },
+    "val": {
+        "num_records": 4,
+        "num_samples": 9685,
+        "boundary_removals": 5,
+        "binary_dist": {
+            "NORMAL": 9040,
+            "ABNORMAL": 645
+        },
+        "5class_dist": {
+            "N": 9040,
+            "S": 76,
+            "V": 544,
+            "F": 25,
+            "Q": 0
+        }
+    },
+    "test": {
+        "num_records": 26,
+        "num_samples": 58448,
+        "boundary_removals": 25,
+        "binary_dist": {
+            "NORMAL": 44745,
+            "ABNORMAL": 13703
+        },
+        "5class_dist": {
+            "N": 44745,
+            "S": 1837,
+            "V": 3447,
+            "F": 388,
+            "Q": 8031
+        }
+    },
+    "total_binary": {
+        "NORMAL": 90591,
+        "ABNORMAL": 18857
+    },
+    "total_5class": {
+        "N": 90591,
+        "S": 2781,
+        "V": 7235,
+        "F": 802,
+        "Q": 8039
+    },
+    "class_weights": {
+        "binary": [
+            0.5612535999565288,
+            4.581392770015524
+        ],
+        "5class": [
+            0.22450144588947296,
+            9.519585609436035,
+            2.547163963317871,
+            21.24164581298828,
+            1032.875
+        ]
+    }
+}

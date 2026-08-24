@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthSense — Smart Healthcare Monitoring & Medical Reporting Platform</title>
+  <meta name="description" content="Professional IoT-Based Smart Health Monitoring and Automated Medical Report System with AI-assisted ECG arrhythmia screening.">
+  
+  <!-- Typography: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="light-theme">
+
+  <!-- =========================================================================
+       1. AUTHENTICATION / LOGIN & REGISTRATION OVERLAY
+       ========================================================================= -->
+  <div id="auth-screen" class="auth-wrapper">
+    
+    <!-- A. LOGIN CARD -->
+    <div class="auth-card" id="login-card">
+      <div class="auth-header">
+        <div class="auth-logo-badge">
+          <i data-lucide="activity" class="auth-logo-icon"></i>
+        </div>
+        <h1 class="auth-brand-name">HealthSense</h1>
+        <p class="auth-brand-tagline">IoT-Based Smart Health Monitoring<br>& Automated Medical Report System</p>
+      </div>
+
+      <div class="auth-divider">
+        <span>Welcome Back</span>
+      </div>
+
+      <!-- Feedback Alert Box -->
+      <div class="auth-alert-box hidden" id="login-alert-box">
+        <i data-lucide="alert-circle" class="alert-icon"></i>
+        <span id="login-alert-text">Invalid credentials.</span>
+      </div>
+
+      <form id="login-form" class="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email Address</label>
+          <div class="input-with-icon">
+            <i data-lucide="mail" class="field-icon"></i>
+            <input type="email" id="login-email" class="form-control" placeholder="Enter your email" value="prajkta.patil@healthsense.org" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="login-password" class="form-label">Password</label>
+            <a href="#" class="forgot-password-link" id="forgot-password-link">Forgot Password?</a>
+          </div>
+          <div class="input-with-icon">
+            <i data-lucide="lock" class="field-icon"></i>
+            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" value="healthsense2026" required>
+            <button type="button" class="password-toggle-btn" id="password-toggle-btn" title="Toggle password visibility">
+              <i data-lucide="eye" id="password-eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="login-submit-btn">
+          <i data-lucide="log-in" class="btn-icon"></i>
+          <span>LOGIN</span>
+        </button>
+
+        <div class="auth-footer-action">
+          <span>Don't have an account?</span>
+          <button type="button" class="btn btn-outline btn-block mt-2" id="goto-register-btn">
+            CREATE NEW ACCOUNT
+          </button>
+        </div>
+
+        <div class="demo-access-notice">
+          <span class="badge badge-subtle">DEMO ACCESS</span>
+          <p>Pre-filled for Evaluation: Prajkta Patil (<code>prajkta.patil@healthsense.org</code> / <code>healthsense2026</code>)</p>
+        </div>
+      </form>
+    </div>
+
+    <!-- B. CREATE ACCOUNT / REGISTRATION CARD -->
+    <div class="auth-card hidden" id="register-card">
+      <div class="auth-header">
+        <div class="auth-logo-badge">
+          <i data-lucide="user-plus" class="auth-logo-icon"></i>
+        </div>
+        <h1 class="auth-brand-name">Create Your HealthSense Account</h1>
+        <p class="auth-brand-tagline">Set up your account to access your health monitoring dashboard.</p>
+      </div>
+
+      <!-- Feedback Alert Box -->
+      <div class="auth-alert-box hidden" id="register-alert-box">
+        <i data-lucide="alert-circle" class="alert-icon"></i>
+        <span id="register-alert-text">Validation error.</span>
+      </div>
+
+      <form id="register-form" class="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label for="reg-name" class="form-label">Full Name <span class="required-star">*</span></label>
+          <div class="input-with-icon">
+            <i data-lucide="user" class="field-icon"></i>
+            <input type="text" id="reg-name" class="form-control" placeholder="Enter your full name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email" class="form-label">Email Address <span class="required-star">*</span></label>
+          <div class="input-with-icon">
+            <i data-lucide="mail" class="field-icon"></i>
+            <input type="email" id="reg-email" class="form-control" placeholder="Enter your email" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="reg-password" class="form-label">Password <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i data-lucide="lock" class="field-icon"></i>
+              <input type="password" id="reg-password" class="form-control" placeholder="Create password (min 6 chars)" required>
+              <button type="button" class="password-toggle-btn" id="reg-password-toggle-btn" title="Toggle password visibility">
+                <i data-lucide="eye" id="reg-password-eye-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-confirm-password" class="form-label">Confirm Password <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i data-lucide="shield-check" class="field-icon"></i>
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="Confirm password" required>
+              <button type="button" class="password-toggle-btn" id="reg-confirm-password-toggle-btn" title="Toggle password visibility">
+                <i data-lucide="eye" id="reg-confirm-password-eye-icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="reg-phone" class="form-label">Phone (Optional)</label>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label for="reg-age" class="form-label">Age</label>
+            <input type="number" id="reg-age" class="form-control" placeholder="e.g. 24" min="1" max="120">
+          </div>
+          <div class="form-group">
+            <label for="reg-gender" class="form-label">Gender</label>
+            <select id="reg-gender" class="form-control">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-2" id="register-submit-btn">
+          <i data-lucide="check-circle" class="btn-icon"></i>
+          <span>CREATE ACCOUNT</span>
+        </button>
+
+        <div class="auth-footer-action">
+          <span>Already have an account?</span>
+          <button type="button" class="btn btn-outline btn-block mt-2" id="goto-login-btn">
+            LOGIN
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================================
+       2. MAIN APPLICATION LAYOUT (SIDEBAR + TOP HEADER + CONTENT)
+       ========================================================================= -->
+  <div id="main-app" class="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo-icon">
+          <i data-lucide="activity"></i>
+        </div>
+        <div class="brand-text-block">
+          <h2 class="sidebar-brand-title">HealthSense</h2>
+          <span class="sidebar-brand-badge">Medical Platform</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">CLINICAL MODULES</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn active" data-page="dashboard-page" id="nav-dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-page="live-monitoring-page" id="nav-live-monitoring">
+              <i data-lucide="radio"></i>
+              <span>Live Monitoring</span>
+              <span class="badge-live-pulse" title="Continuous Real-time Telemetry">LIVE</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-page="ecg-analysis-page" id="nav-ecg-analysis">
+              <i data-lucide="heart-pulse"></i>
+              <span>ECG Analysis</span>
+              <span class="badge-ai">AI</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-page="medical-reports-page" id="nav-medical-reports">
+              <i data-lucide="file-text"></i>
+              <span>Medical Reports</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-page="health-history-page" id="nav-health-history">
+              <i data-lucide="history"></i>
+              <span>Health History</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">SYSTEM & PREFERENCES</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn" data-page="settings-page" id="nav-settings">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </button>
+          </li>
+          <li>
+            <a href="/docs" target="_blank" class="nav-item-btn external-link">
+              <i data-lucide="book-open"></i>
+              <span>API Swagger Docs</span>
+              <i data-lucide="external-link" class="external-icon"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="patient-quick-card">
+          <div class="patient-avatar-sm">PP</div>
+          <div class="patient-info-meta">
+            <span class="patient-name" id="sidebar-patient-name">Prajkta Patil</span>
+            <span class="patient-role-tag">ID: #HS-1082</span>
+          </div>
+        </div>
+        <button class="btn-logout" id="logout-btn" title="Logout from HealthSense">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="app-main-wrapper">
+      
+      <!-- TOP NAVIGATION BAR -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" id="sidebar-toggle-btn" title="Toggle Navigation Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="global-search-bar">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="global-search-input" placeholder="Search vitals, reports, readings (e.g. ECG, Heart Rate)..." aria-label="Search records">
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- API Connectivity Indicator -->
+          <div class="api-health-pill" id="api-health-pill" title="Backend REST API Connectivity Status">
+            <span class="status-indicator-dot online" id="topbar-api-dot"></span>
+            <span class="api-health-text" id="topbar-api-text">API Connected</span>
+          </div>
+
+          <!-- Notification Dropdown -->
+          <div class="notification-wrap">
+            <button class="topbar-icon-btn" id="notification-btn" title="System Notifications">
+              <i data-lucide="bell"></i>
+              <span class="notification-badge-dot"></span>
+            </button>
+            <div class="notification-dropdown hidden" id="notification-dropdown">
+              <div class="notification-header">
+                <span class="notification-title">Notifications</span>
+                <button class="btn-text-action" id="mark-read-btn">Mark all read</button>
+              </div>
+              <div class="notification-list" id="notification-list">
+                <div class="notification-item unread">
+                  <div class="notif-icon-circle blue"><i data-lucide="file-check"></i></div>
+                  <div class="notif-content">
+                    <p class="notif-text"><strong>Medical Report #HS-RPT-20260824</strong> generated successfully.</p>
+                    <span class="notif-time">10 mins ago</span>
+                  </div>
+                </div>
+                <div class="notification-item">
+                  <div class="notif-icon-circle green"><i data-lucide="heart-pulse"></i></div>
+                  <div class="notif-content">
+                    <p class="notif-text">ECG 1D-CNN Model loaded and active at threshold 0.30.</p>
+                    <span class="notif-time">1 hour ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Profile Dropdown -->
+          <div class="user-profile-menu">
+            <button class="user-profile-btn" id="user-profile-toggle">
+              <div class="user-avatar">PP</div>
+              <div class="user-details-text">
+                <span class="user-name" id="topbar-user-name">Prajkta Patil</span>
+                <span class="user-role">Patient (Standard)</span>
+              </div>
+              <i data-lucide="chevron-down" class="dropdown-chevron"></i>
+            </button>
+            <div class="profile-dropdown-menu hidden" id="profile-dropdown-menu">
+              <div class="dropdown-user-header">
+                <strong>Prajkta Patil</strong>
+                <span>prajkta.patil@healthsense.org</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" id="dropdown-settings-btn"><i data-lucide="user"></i> Patient Profile</button>
+              <button class="dropdown-item" id="dropdown-reports-btn"><i data-lucide="file-text"></i> My Reports</button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item logout" id="dropdown-logout-btn"><i data-lucide="log-out"></i> Logout</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW CONTAINER -->
+      <main class="app-content-container">
+
+        <!-- ===================================================================
+             PAGE 1: MAIN DASHBOARD
+             =================================================================== -->
+        <section id="dashboard-page" class="page-view active">
+          
+          <!-- Page Header Banner -->
+          <div class="page-title-banner">
+            <div>
+              <h1 class="page-heading">Dashboard</h1>
+              <p class="page-subheading">Welcome back, <span class="text-highlight" id="dashboard-greeting-name">Prajkta</span>! Here is your current physiological summary and recent medical records.</p>
+            </div>
+            <div class="banner-right-actions">
+              <span class="badge badge-timestamp"><i data-lucide="clock" class="mini-icon"></i> Last Synced: <span id="dashboard-sync-time">Just now</span></span>
+              <button class="btn btn-primary" id="dash-quick-analyze-btn">
+                <i data-lucide="heart-pulse"></i> Analyze New ECG
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Health Summary Metric Cards -->
+          <div class="metric-cards-grid">
+            
+            <!-- Heart Rate Card -->
+            <div class="summary-card" id="card-hr">
+              <div class="card-top-row">
+                <span class="summary-card-label">HEART RATE</span>
+                <div class="metric-icon-box bg-rose-subtle text-rose">
+                  <i data-lucide="heart" class="pulse-icon"></i>
+                </div>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="dash-hr-val">72</span>
+                <span class="metric-unit">bpm</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="badge badge-success" id="dash-hr-status"><i data-lucide="check" class="tiny-icon"></i> Normal</span>
+                <span class="metric-target-text">Target: 60–100 bpm</span>
+              </div>
+            </div>
+
+            <!-- Blood Oxygen SpO2 Card -->
+            <div class="summary-card" id="card-spo2">
+              <div class="card-top-row">
+                <span class="summary-card-label">SPO₂ (OXYGEN)</span>
+                <div class="metric-icon-box bg-cyan-subtle text-cyan">
+                  <i data-lucide="droplet"></i>
+                </div>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="dash-spo2-val">98</span>
+                <span class="metric-unit">%</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="badge badge-success" id="dash-spo2-status"><i data-lucide="check" class="tiny-icon"></i> Normal</span>
+                <span class="metric-target-text">Target: &ge; 95%</span>
+              </div>
+            </div>
+
+            <!-- Body Temperature Card -->
+            <div class="summary-card" id="card-temp">
+              <div class="card-top-row">
+                <span class="summary-card-label">BODY TEMPERATURE</span>
+                <div class="metric-icon-box bg-amber-subtle text-amber">
+                  <i data-lucide="thermometer"></i>
+                </div>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="dash-temp-val">36.6</span>
+                <span class="metric-unit">°C</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="badge badge-success" id="dash-temp-status"><i data-lucide="check" class="tiny-icon"></i> Normal</span>
+                <span class="metric-target-text">Nominal: 36.1–37.2 °C</span>
+              </div>
+            </div>
+
+            <!-- Overall Health Status Card -->
+            <div class="summary-card highlight-card" id="card-overall-status">
+              <div class="card-top-row">
+                <span class="summary-card-label">HEALTH STATUS</span>
+                <div class="metric-icon-box bg-emerald-subtle text-emerald">
+                  <i data-lucide="shield-check"></i>
+                </div>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-status-title text-emerald" id="dash-overall-title">Normal</span>
+              </div>
+              <div class="card-bottom-row">
+                <p class="status-cheer-text" id="dash-overall-msg">You are doing great! All monitored vitals reside within reference guidelines.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Middle Row: Latest Medical Report & Quick Actions / Reminders -->
+          <div class="dashboard-split-grid">
+            
+            <!-- Latest Medical Report Card -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="file-badge" class="panel-icon text-primary-color"></i>
+                  <div>
+                    <h3 class="panel-title">Latest Medical Report</h3>
+                    <span class="panel-subtitle">Automated Multi-Parameter Health Assessment</span>
+                  </div>
+                </div>
+                <span class="badge badge-pill-success" id="report-status-badge">Complete (Validated)</span>
+              </div>
+
+              <div class="report-metadata-grid">
+                <div class="report-meta-item">
+                  <span class="meta-label">Report ID</span>
+                  <strong class="meta-value mono" id="dash-rpt-id">HS-RPT-20260824-01</strong>
+                </div>
+                <div class="report-meta-item">
+                  <span class="meta-label">Assessment Date</span>
+                  <strong class="meta-value" id="dash-rpt-date">24 Aug 2026</strong>
+                </div>
+                <div class="report-meta-item">
+                  <span class="meta-label">Timestamp</span>
+                  <strong class="meta-value mono" id="dash-rpt-time">12:34:00 PM</strong>
+                </div>
+                <div class="report-meta-item">
+                  <span class="meta-label">ECG Rhythm Status</span>
+                  <strong class="meta-value text-emerald" id="dash-rpt-ecg-status">NORMAL (Sinus Rhythm)</strong>
+                </div>
+              </div>
+
+              <div class="report-summary-box">
+                <span class="box-title">Clinical Screening Remark:</span>
+                <p class="box-text" id="dash-rpt-remark">
+                  Single-lead ECG morphology demonstrates normal QRS duration with no significant ectopic burden. Heart rate (72 bpm), SpO2 (98%), and body temperature (36.6°C) are within standard clinical reference thresholds.
+                </p>
+              </div>
+
+              <div class="panel-card-footer">
+                <button class="btn btn-outline" id="dash-view-report-btn">
+                  <i data-lucide="eye"></i> VIEW FULL REPORT
+                </button>
+                <button class="btn btn-primary" id="dash-download-report-btn">
+                  <i data-lucide="download"></i> DOWNLOAD REPORT
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column: Quick Actions & Upcoming Reminders -->
+            <div class="dashboard-side-stack">
+              
+              <!-- Quick Actions Card -->
+              <div class="medical-panel-card compact">
+                <div class="panel-card-header">
+                  <div class="header-left">
+                    <i data-lucide="zap" class="panel-icon text-cyan"></i>
+                    <h3 class="panel-title">Quick Actions</h3>
+                  </div>
+                </div>
+                <div class="quick-actions-list">
+                  <button class="btn btn-quick-action" id="qa-analyze-ecg">
+                    <i data-lucide="heart-pulse" class="qa-icon text-rose"></i>
+                    <div class="qa-text-wrap">
+                      <span class="qa-title">ANALYZE ECG</span>
+                      <span class="qa-sub">AI 1D-CNN Rhythm Classification</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="qa-arrow"></i>
+                  </button>
+
+                  <button class="btn btn-quick-action" id="qa-download-report">
+                    <i data-lucide="download-cloud" class="qa-icon text-cyan"></i>
+                    <div class="qa-text-wrap">
+                      <span class="qa-title">DOWNLOAD REPORT</span>
+                      <span class="qa-sub">PDF/Printable Assessment</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="qa-arrow"></i>
+                  </button>
+
+                  <button class="btn btn-quick-action" id="qa-share-report">
+                    <i data-lucide="share-2" class="qa-icon text-emerald"></i>
+                    <div class="qa-text-wrap">
+                      <span class="qa-title">SHARE REPORT</span>
+                      <span class="qa-sub">Secure Clinical Export</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="qa-arrow"></i>
+                  </button>
+
+                  <button class="btn btn-quick-action" id="qa-book-appointment">
+                    <i data-lucide="calendar-plus" class="qa-icon text-primary-color"></i>
+                    <div class="qa-text-wrap">
+                      <span class="qa-title">BOOK APPOINTMENT</span>
+                      <span class="qa-sub">Schedule Clinician Review</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="qa-arrow"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Upcoming Reminder Card -->
+              <div class="medical-panel-card compact reminder-card">
+                <div class="panel-card-header">
+                  <div class="header-left">
+                    <i data-lucide="calendar-clock" class="panel-icon text-amber"></i>
+                    <h3 class="panel-title">Upcoming Reminder</h3>
+                  </div>
+                  <span class="badge badge-demo">DEMO APPOINTMENT</span>
+                </div>
+                <div class="reminder-content-body">
+                  <div class="reminder-event-title">Routine Cardiology Follow-up</div>
+                  <div class="reminder-time-row">
+                    <span><i data-lucide="calendar" class="tiny-icon"></i> 28 Aug 2026</span>
+                    <span><i data-lucide="clock" class="tiny-icon"></i> 10:30 AM</span>
+                  </div>
+                  <p class="reminder-note">Sample scheduled appointment reminder for demonstration purposes.</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Bottom: Health History (Recent Readings Table) -->
+          <div class="medical-panel-card">
+            <div class="panel-card-header">
+              <div class="header-left">
+                <i data-lucide="table" class="panel-icon text-primary-color"></i>
+                <div>
+                  <h3 class="panel-title">Health History (Recent Readings)</h3>
+                  <span class="panel-subtitle">Chronological record of multi-sensor telemetry and ML classifications</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline" id="dash-view-full-history-btn">
+                VIEW FULL HISTORY <i data-lucide="arrow-right" class="tiny-icon"></i>
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="medical-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Heart Rate</th>
+                    <th>SpO₂</th>
+                    <th>Temperature</th>
+                    <th>ECG Status</th>
+                    <th>Overall Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-history-table-body">
+                  <tr>
+                    <td><strong>24 Aug 2026, 12:30 PM</strong></td>
+                    <td>72 bpm</td>
+                    <td>98 %</td>
+                    <td>36.6 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL (0.89%)</span></td>
+                    <td><span class="badge badge-sm badge-success">Normal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(0)">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>24 Aug 2026, 09:15 AM</strong></td>
+                    <td>74 bpm</td>
+                    <td>98 %</td>
+                    <td>36.7 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL (1.12%)</span></td>
+                    <td><span class="badge badge-sm badge-success">Normal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(1)">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>23 Aug 2026, 06:45 PM</strong></td>
+                    <td>88 bpm</td>
+                    <td>97 %</td>
+                    <td>36.8 °C</td>
+                    <td><span class="badge badge-sm badge-warning">ARRHYTHMIA (99.13%)</span></td>
+                    <td><span class="badge badge-sm badge-warning">Observed</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(2)">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>23 Aug 2026, 08:00 AM</strong></td>
+                    <td>70 bpm</td>
+                    <td>99 %</td>
+                    <td>36.5 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL (0.75%)</span></td>
+                    <td><span class="badge badge-sm badge-success">Normal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(3)">View</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             PAGE 2: LIVE MONITORING
+             =================================================================== -->
+        <section id="live-monitoring-page" class="page-view">
+          
+          <div class="page-title-banner">
+            <div>
+              <h1 class="page-heading">Live Physiological Monitoring</h1>
+              <p class="page-subheading">Real-time telemetry stream from ESP32 multi-parameter patient sensors (Lead II ECG, MAX30102 PPG, DS18B20 1-Wire).</p>
+            </div>
+            <div class="banner-right-actions">
+              <span class="badge badge-demo" id="sim-status-indicator">SIMULATION MODE ACTIVE</span>
+              <div class="scenario-selector-wrap">
+                <label for="live-scenario-select">Preset:</label>
+                <select id="live-scenario-select" class="form-select-sm">
+                  <option value="normal_sinus" selected>Normal Sinus Rhythm (Nominal)</option>
+                  <option value="arrhythmia_surge">Arrhythmia Surge (PVCs / Ectopic)</option>
+                  <option value="hypoxemia">Hypoxemia (SpO2 Critical Drop)</option>
+                  <option value="fever_pyrexia">Pyrexia / Severe Fever Spike</option>
+                  <option value="bradycardia">Severe Bradycardia (Low HR)</option>
+                </select>
+              </div>
+              <button class="btn btn-outline" id="live-stream-toggle-btn">
+                <i data-lucide="pause" id="live-stream-btn-icon"></i>
+                <span id="live-stream-btn-text">Pause Stream</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live 4 Vitals Grid -->
+          <div class="metric-cards-grid">
+            <div class="summary-card">
+              <div class="card-top-row">
+                <span class="summary-card-label">HEART RATE</span>
+                <span class="badge badge-success" id="live-hr-pill">Normal</span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="live-hr-number">72</span>
+                <span class="metric-unit">bpm</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="text-muted">Sensor: MAX30102 PPG</span>
+                <span class="text-muted">Nominal: 60–100 bpm</span>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="card-top-row">
+                <span class="summary-card-label">BLOOD OXYGEN (SPO₂)</span>
+                <span class="badge badge-success" id="live-spo2-pill">Normal</span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="live-spo2-number">98.2</span>
+                <span class="metric-unit">%</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="text-muted">Pulse Oximetry</span>
+                <span class="text-muted">Nominal: &ge; 95%</span>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="card-top-row">
+                <span class="summary-card-label">BODY TEMPERATURE</span>
+                <span class="badge badge-success" id="live-temp-pill">Normal</span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-huge-number" id="live-temp-number">36.8</span>
+                <span class="metric-unit">°C</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="text-muted">Sensor: DS18B20</span>
+                <span class="text-muted">Nominal: 36.1–37.2 °C</span>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="card-top-row">
+                <span class="summary-card-label">LIVE ML RHYTHM</span>
+                <span class="badge badge-success" id="live-ecg-pill">NORMAL</span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-status-title text-emerald" id="live-ecg-rhythm">Normal Sinus</span>
+              </div>
+              <div class="card-bottom-row">
+                <span class="text-muted">1D-CNN Screening</span>
+                <span class="text-muted">Threshold: 30%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Continuous ECG Waveform Card -->
+          <div class="medical-panel-card">
+            <div class="panel-card-header">
+              <div class="header-left">
+                <i data-lucide="activity" class="panel-icon text-cyan"></i>
+                <div>
+                  <h3 class="panel-title">Continuous Real-Time Oscilloscope Trace (Lead II)</h3>
+                  <span class="panel-subtitle">Continuous sample ingestion from ESP32 telemetry server buffer (/api/stream)</span>
+                </div>
+              </div>
+              <span class="badge badge-tag">25 mm/s | 10 mm/mV</span>
+            </div>
+
+            <div class="canvas-medical-viewport">
+              <canvas id="liveEcgCanvas" width="1000" height="260"></canvas>
+              <div class="lead-watermark">LEAD II (AD8232)</div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             PAGE 3: ECG ANALYSIS (PRESERVED & ELEVATED AI WORKFLOW)
+             =================================================================== -->
+        <section id="ecg-analysis-page" class="page-view">
+          
+          <div class="page-title-banner">
+            <div>
+              <h1 class="page-heading">AI-Assisted ECG Rhythm Analysis</h1>
+              <p class="page-subheading">High-precision single-beat arrhythmia classification using the verified HealthSense 1D-CNN model (calibrated threshold $\tau=0.30$).</p>
+            </div>
+            <div class="banner-right-actions">
+              <span class="badge badge-pill-info"><i data-lucide="cpu" class="tiny-icon"></i> Model: Optimized 1D-CNN (Verified)</span>
+            </div>
+          </div>
+
+          <!-- Top Grid: Input Controls + ECG Waveform Visualizer -->
+          <div class="ecg-analysis-grid">
+            
+            <!-- Left: Input Presets & Upload -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="file-input" class="panel-icon text-primary-color"></i>
+                  <div>
+                    <h3 class="panel-title">ECG Beat Input</h3>
+                    <span class="panel-subtitle">Select a known test beat or upload custom data</span>
+                  </div>
+                </div>
+                <span class="badge badge-cyan-pill" id="sample-count-badge">256 / 256 samples valid</span>
+              </div>
+
+              <!-- Quick Presets -->
+              <div class="form-section">
+                <label class="form-section-label">Verified Benchmark Presets:</label>
+                <div class="preset-buttons-stack">
+                  <button class="btn btn-preset-card active" id="preset-normal-btn">
+                    <div class="preset-card-icon text-emerald"><i data-lucide="check-circle-2"></i></div>
+                    <div class="preset-card-body">
+                      <strong>Known Normal Beat (#0)</strong>
+                      <span>Patient Record 100 — MIT-BIH DS2 Benchmark</span>
+                    </div>
+                  </button>
+
+                  <button class="btn btn-preset-card" id="preset-abnormal-btn">
+                    <div class="preset-card-icon text-rose"><i data-lucide="alert-triangle"></i></div>
+                    <div class="preset-card-body">
+                      <strong>Known Arrhythmia / PVC (#6077)</strong>
+                      <span>Patient Record 105 — Ventricular Ectopic Beat</span>
+                    </div>
+                  </button>
+
+                  <button class="btn btn-preset-card" id="preset-synthetic-btn">
+                    <div class="preset-card-icon text-cyan"><i data-lucide="sparkles"></i></div>
+                    <div class="preset-card-body">
+                      <strong>Synthetic Test Beat</strong>
+                      <span>Generated P-QRS-T Sinus Waveform</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Upload Dropzone -->
+              <div class="form-section">
+                <label class="form-section-label">Upload or Manual Array:</label>
+                <div class="upload-box-light" id="upload-dropzone">
+                  <input type="file" id="file-upload-input" accept=".json,.csv,.txt" class="file-hidden-input">
+                  <i data-lucide="upload-cloud" class="upload-light-icon"></i>
+                  <span class="upload-light-title">Upload ECG JSON / CSV (256 points)</span>
+                  <span class="upload-light-sub">Click or drag & drop file here</span>
+                </div>
+
+                <details class="manual-json-details">
+                  <summary><i data-lucide="code" class="tiny-icon"></i> View / Edit Raw Samples (JSON Array)</summary>
+                  <textarea id="raw-samples-textarea" class="form-control mono-textarea" rows="4" placeholder="[0.05, 0.08, 0.12, ...]"></textarea>
+                  <div class="mt-2 text-right">
+                    <button class="btn btn-sm btn-outline" id="apply-raw-btn">Apply JSON</button>
+                  </div>
+                </details>
+              </div>
+
+              <!-- Prominent Analyze Button -->
+              <div class="action-submit-block">
+                <button class="btn btn-primary btn-large btn-block" id="analyze-ecg-btn">
+                  <i data-lucide="play-circle" id="analyze-icon"></i>
+                  <span id="analyze-text">ANALYZE ECG</span>
+                  <span class="btn-spinner hidden" id="analyze-spinner"></span>
+                </button>
+                <p class="text-caption text-center">Sends 256 float samples to <code>POST /api/ecg/predict</code></p>
+              </div>
+            </div>
+
+            <!-- Right: ECG Waveform Visualizer on Medical White Card -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="heart-pulse" class="panel-icon text-rose"></i>
+                  <div>
+                    <h3 class="panel-title">ECG Waveform (Lead MLII)</h3>
+                    <span class="panel-subtitle" id="waveform-caption">256 samples | Medical ECG Grid | Standard Calibrated Trace</span>
+                  </div>
+                </div>
+                <div class="gain-controls-light">
+                  <span class="gain-label">Gain:</span>
+                  <button class="btn-gain" data-gain="0.75">0.75x</button>
+                  <button class="btn-gain active" data-gain="1.0">1.0x</button>
+                  <button class="btn-gain" data-gain="1.5">1.5x</button>
+                </div>
+              </div>
+
+              <div class="canvas-medical-viewport light-medical-canvas">
+                <canvas id="beatCanvas" width="900" height="290"></canvas>
+                <div class="waveform-hover-tooltip" id="waveform-tooltip"></div>
+                <div class="r-peak-indicator" id="r-peak-indicator" title="R-Peak Reference (~Sample #100)">
+                  <span class="r-peak-line"></span>
+                  <span class="r-peak-label">R-Peak Ref</span>
+                </div>
+              </div>
+
+              <div class="canvas-footer-stats">
+                <div class="stat-pill"><span class="stat-pill-label">Total Points:</span> <strong id="canvas-point-count">256 samples</strong></div>
+                <div class="stat-pill"><span class="stat-pill-label">Min Amplitude:</span> <strong id="canvas-min-amp">-0.820 mV</strong></div>
+                <div class="stat-pill"><span class="stat-pill-label">Max Amplitude:</span> <strong id="canvas-max-amp">+1.450 mV</strong></div>
+                <div class="stat-pill"><span class="stat-pill-label">Mean Voltage:</span> <strong id="canvas-mean-amp">0.000 (Z-Score)</strong></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ECG Prediction Result Card (Visually Distinct Normal vs Abnormal) -->
+          <div class="medical-panel-card result-panel-card normal" id="result-card">
+            <div class="result-header-flex">
+              <div class="result-badge-col">
+                <span class="result-super-tag">AI RHYTHM CLASSIFICATION RESULT</span>
+                <div class="result-main-badge normal" id="prediction-main-badge">
+                  <i data-lucide="shield-check" id="prediction-icon" class="badge-result-icon"></i>
+                  <span id="prediction-text">NORMAL</span>
+                </div>
+                <p class="result-explanation" id="prediction-summary-text">
+                  ECG beat waveform features match standard normal sinus rhythm characteristics. Abnormal probability is below the 30% threshold.
+                </p>
+              </div>
+
+              <div class="result-status-block">
+                <span class="status-badge-chip success" id="result-status-badge">Analysis Complete (200 OK)</span>
+              </div>
+            </div>
+
+            <!-- Diagnostics Metrics Tiles -->
+            <div class="result-metrics-grid">
+              
+              <div class="result-metric-tile">
+                <div class="tile-header">
+                  <span class="tile-label">Abnormal Probability</span>
+                  <strong class="tile-val" id="prob-pct-display">0.89%</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill normal" id="prob-bar-fill" style="width: 0.89%;"></div>
+                </div>
+                <div class="tile-sub"><span>0.00% (Normal)</span> <span>Threshold: 30.00%</span> <span>100.00%</span></div>
+              </div>
+
+              <div class="result-metric-tile">
+                <div class="tile-header">
+                  <span class="tile-label">Confidence</span>
+                  <strong class="tile-val" id="confidence-pct-display">99.11%</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill confidence" id="confidence-bar-fill" style="width: 99.11%;"></div>
+                </div>
+                <div class="tile-sub">Certainty for predicted class</div>
+              </div>
+
+              <div class="result-metric-tile">
+                <div class="tile-header">
+                  <span class="tile-label">Decision Threshold</span>
+                  <strong class="tile-val mono">30% (0.30)</strong>
+                </div>
+                <div class="threshold-pill-box">Validation F1 Calibrated</div>
+                <div class="tile-sub">Abnormal if Probability &ge; 0.30</div>
+              </div>
+
+              <div class="result-metric-tile">
+                <div class="tile-header">
+                  <span class="tile-label">Class Identifier</span>
+                  <strong class="tile-val mono" id="class-id-display">0 (NORMAL)</strong>
+                </div>
+                <div class="threshold-pill-box" id="class-desc-tag">Class 0: Normal Sinus</div>
+                <div class="tile-sub">AAMI Standard Mapping</div>
+              </div>
+
+            </div>
+
+            <!-- Non-alarming Medical Disclaimer Banner -->
+            <div class="medical-decision-notice">
+              <i data-lucide="info" class="notice-icon"></i>
+              <span><strong>Decision-Support Notice:</strong> AI-assisted ECG classification result on isolated 256-sample Lead MLII beat. This is an automated screening tool for research/educational demonstration and does not replace evaluation by a qualified healthcare professional.</span>
+            </div>
+          </div>
+
+          <!-- Bottom: Model Performance & Information Specifications -->
+          <div class="dashboard-split-grid">
+            
+            <!-- Validated Model Performance Section -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="award" class="panel-icon text-emerald"></i>
+                  <div>
+                    <h3 class="panel-title">ECG Model Performance</h3>
+                    <span class="panel-subtitle">Validated test-set performance (MIT-BIH Arrhythmia Benchmark)</span>
+                  </div>
+                </div>
+                <span class="badge badge-pill-success">LOCKED</span>
+              </div>
+
+              <div class="perf-metric-grid">
+                <div class="perf-box">
+                  <span class="perf-title">Accuracy</span>
+                  <span class="perf-num text-primary-color">79.02%</span>
+                  <span class="perf-detail">58,448 Test Beats</span>
+                </div>
+                <div class="perf-box">
+                  <span class="perf-title">Precision</span>
+                  <span class="perf-num text-primary-color">55.03%</span>
+                  <span class="perf-detail">Positive Predictive Val</span>
+                </div>
+                <div class="perf-box">
+                  <span class="perf-title">Sensitivity</span>
+                  <span class="perf-num text-primary-color">57.63%</span>
+                  <span class="perf-detail">Arrhythmia Detection</span>
+                </div>
+                <div class="perf-box">
+                  <span class="perf-title">Specificity</span>
+                  <span class="perf-num text-primary-color">85.58%</span>
+                  <span class="perf-detail">Normal Discrimination</span>
+                </div>
+                <div class="perf-box">
+                  <span class="perf-title">F1-Score</span>
+                  <span class="perf-num text-primary-color mono">0.5630</span>
+                  <span class="perf-detail">Harmonic Mean</span>
+                </div>
+                <div class="perf-box">
+                  <span class="perf-title">ROC-AUC</span>
+                  <span class="perf-num text-primary-color mono">0.8056</span>
+                  <span class="perf-detail">Area Under Curve</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Information Specifications -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="cpu" class="panel-icon text-cyan"></i>
+                  <div>
+                    <h3 class="panel-title">Model Information</h3>
+                    <span class="panel-subtitle">Neural Network Specifications & Training Pipeline</span>
+                  </div>
+                </div>
+                <span class="badge badge-tag">Verified</span>
+              </div>
+
+              <div class="spec-table-list">
+                <div class="spec-item-row">
+                  <span class="spec-name"><i data-lucide="layers" class="mini-icon"></i> Model Architecture:</span>
+                  <strong class="spec-val">Optimized 1D-CNN (3 Conv Blocks + GAP + Dense)</strong>
+                </div>
+                <div class="spec-item-row">
+                  <span class="spec-name"><i data-lucide="maximize-2" class="mini-icon"></i> Input Dimension:</span>
+                  <strong class="spec-val">256 ECG samples (~711 ms at 360 Hz)</strong>
+                </div>
+                <div class="spec-item-row">
+                  <span class="spec-name"><i data-lucide="sliders" class="mini-icon"></i> Decision Threshold:</span>
+                  <strong class="spec-val text-primary-color">0.30 (Validation F1-Tuned)</strong>
+                </div>
+                <div class="spec-item-row">
+                  <span class="spec-name"><i data-lucide="filter" class="mini-icon"></i> Preprocessing:</span>
+                  <strong class="spec-val">Per-beat Z-score normalization: (x - &mu;) / &sigma;</strong>
+                </div>
+                <div class="spec-item-row">
+                  <span class="spec-name"><i data-lucide="database" class="mini-icon"></i> Test Dataset:</span>
+                  <strong class="spec-val">58,448 beats / 26 unseen patients</strong>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             PAGE 4: MEDICAL REPORTS (PRINTABLE & STRUCTURED)
+             =================================================================== -->
+        <section id="medical-reports-page" class="page-view">
+          
+          <div class="page-title-banner no-print">
+            <div>
+              <h1 class="page-heading">Medical Reports</h1>
+              <p class="page-subheading">Generate, preview, print, and export comprehensive AI-assisted health assessment reports.</p>
+            </div>
+            <div class="banner-right-actions">
+              <button class="btn btn-outline" id="print-report-btn" onclick="window.print()">
+                <i data-lucide="printer"></i> PRINT REPORT
+              </button>
+              <button class="btn btn-primary" id="download-report-pdf-btn">
+                <i data-lucide="download"></i> DOWNLOAD PDF
+              </button>
+              <button class="btn btn-outline" id="share-report-btn">
+                <i data-lucide="share-2"></i> SHARE
+              </button>
+            </div>
+          </div>
+
+          <!-- Formal Medical Report Sheet -->
+          <div class="medical-report-sheet" id="printable-medical-report">
+            
+            <!-- Report Header -->
+            <div class="report-sheet-header">
+              <div class="report-brand-block">
+                <div class="report-logo-badge"><i data-lucide="activity"></i></div>
+                <div>
+                  <h2 class="report-brand-name">HealthSense</h2>
+                  <p class="report-brand-sub">IoT-Based Smart Health Monitoring & Automated Medical Report System</p>
+                </div>
+              </div>
+              <div class="report-badge-meta">
+                <span class="report-type-tag">AI-ASSISTED HEALTH REPORT</span>
+                <span class="report-id-text">Report ID: <strong>HS-RPT-20260824-01</strong></span>
+              </div>
+            </div>
+
+            <div class="report-sheet-divider"></div>
+
+            <!-- Patient Information Section -->
+            <div class="report-patient-info-section">
+              <h4 class="report-section-heading">1. Patient Information</h4>
+              <div class="report-patient-grid">
+                <div class="patient-field"><span class="lbl">Patient Name:</span> <strong>Prajkta Patil</strong></div>
+                <div class="patient-field"><span class="lbl">Patient ID:</span> <strong class="mono">#HS-1082</strong></div>
+                <div class="patient-field"><span class="lbl">Age / Gender:</span> <strong>24 Y / Female</strong></div>
+                <div class="patient-field"><span class="lbl">Assessment Date:</span> <strong>24 Aug 2026</strong></div>
+                <div class="patient-field"><span class="lbl">Assessment Time:</span> <strong>12:34:00 PM</strong></div>
+                <div class="patient-field"><span class="lbl">Device Node:</span> <strong>ESP32_NODE_01 (Online)</strong></div>
+              </div>
+            </div>
+
+            <!-- Vitals Summary Table -->
+            <div class="report-vitals-section">
+              <h4 class="report-section-heading">2. Physiological Vitals Summary</h4>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Measured Value</th>
+                    <th>Unit</th>
+                    <th>Normal Reference Range</th>
+                    <th>Clinical Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Heart Rate (PPG)</strong></td>
+                    <td id="rpt-hr-val">72</td>
+                    <td>bpm</td>
+                    <td>60 – 100 bpm</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Blood Oxygen (SpO₂)</strong></td>
+                    <td id="rpt-spo2-val">98.0</td>
+                    <td>%</td>
+                    <td>&ge; 95 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Body Temperature</strong></td>
+                    <td id="rpt-temp-val">36.6</td>
+                    <td>°C</td>
+                    <td>36.1 – 37.2 °C</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>ECG Arrhythmia Screening</strong></td>
+                    <td id="rpt-ecg-prob">0.89% (Prob)</td>
+                    <td>—</td>
+                    <td>Threshold &lt; 30%</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL SINUS</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Overall Health Status -->
+            <div class="report-status-section">
+              <h4 class="report-section-heading">3. Overall Health Status</h4>
+              <div class="report-overall-card normal">
+                <div class="overall-badge-row">
+                  <span class="badge badge-pill-success"><i data-lucide="check-circle-2" class="tiny-icon"></i> OVERALL: NORMAL / NOMINAL</span>
+                  <span class="text-muted text-sm">Automated Rule-Based & ML Evaluation</span>
+                </div>
+                <p class="overall-text">
+                  All physiological parameters (heart rate, blood oxygen saturation, body temperature, and single-lead ECG morphology) are currently within nominal healthy baseline ranges.
+                </p>
+              </div>
+            </div>
+
+            <!-- ECG Analysis Summary -->
+            <div class="report-ecg-summary-section">
+              <h4 class="report-section-heading">4. ECG Analysis Summary</h4>
+              <div class="report-ecg-box">
+                <div class="ecg-box-stats">
+                  <div>Classification: <strong>NORMAL</strong></div>
+                  <div>Abnormal Probability: <strong>0.89%</strong></div>
+                  <div>Confidence: <strong>99.11%</strong></div>
+                  <div>Decision Threshold: <strong>30.00%</strong></div>
+                  <div>Sample Window: <strong>256 samples (~711 ms)</strong></div>
+                </div>
+                <p class="ecg-box-description">
+                  Model evaluation on Lead MLII QRS segment indicates standard sinus morphology. No premature ventricular contractions or abnormal supraventricular beats detected in this beat segment.
+                </p>
+              </div>
+            </div>
+
+            <!-- AI-Assisted Report Summary -->
+            <div class="report-ai-summary-section">
+              <h4 class="report-section-heading">5. AI-Assisted Report Summary & Recommendation</h4>
+              <div class="report-recommendation-box">
+                <p>
+                  <strong>Clinical Observation:</strong> Patient's current telemetry indicates stable vital signs. Routine monitoring advised as per scheduled follow-ups.
+                </p>
+                <p class="text-muted text-sm mt-1">
+                  <em>Note: This automated summary is generated by the HealthSense machine learning decision-support system. It is intended to assist medical professionals and does not constitute a definitive medical diagnosis.</em>
+                </p>
+              </div>
+            </div>
+
+            <!-- Report Footer Signature Block -->
+            <div class="report-sheet-footer">
+              <div class="signature-block">
+                <div class="sig-title">System Verified By:</div>
+                <div class="sig-name">HealthSense AI Automated Engine v2.0</div>
+                <div class="sig-meta">AI-Assisted HealthSense Report (Algorithm Verified)</div>
+              </div>
+              <div class="signature-block text-right">
+                <div class="sig-title">Generated On:</div>
+                <div class="sig-name" id="rpt-generated-time">24 Aug 2026, 12:34:00 PM</div>
+                <div class="sig-meta">Patient Copy • Confidential Medical Record</div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             PAGE 5: HEALTH HISTORY
+             =================================================================== -->
+        <section id="health-history-page" class="page-view">
+          
+          <div class="page-title-banner">
+            <div>
+              <h1 class="page-heading">Health History</h1>
+              <p class="page-subheading">Complete longitudinal archive of patient readings, ECG screening evaluations, and historical medical reports.</p>
+            </div>
+            <div class="banner-right-actions">
+              <button class="btn btn-outline" id="export-history-csv-btn">
+                <i data-lucide="download"></i> EXPORT TO CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- History Filter Bar -->
+          <div class="medical-panel-card compact">
+            <div class="history-filter-row">
+              <div class="filter-group">
+                <label>Filter by Date:</label>
+                <select class="form-select-sm" id="history-date-filter">
+                  <option value="all">All Time</option>
+                  <option value="today" selected>Today (24 Aug 2026)</option>
+                  <option value="week">Past 7 Days</option>
+                  <option value="month">Past 30 Days</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label>ECG Rhythm Filter:</label>
+                <select class="form-select-sm" id="history-ecg-filter">
+                  <option value="all" selected>All Rhythms</option>
+                  <option value="normal">Normal Only</option>
+                  <option value="abnormal">Abnormal / Arrhythmia Only</option>
+                </select>
+              </div>
+              <div class="filter-group flex-1">
+                <label>Search Record:</label>
+                <input type="text" class="form-control" id="history-search-input" placeholder="Search by time, status, or remark...">
+              </div>
+            </div>
+          </div>
+
+          <!-- History Table -->
+          <div class="medical-panel-card mt-3">
+            <div class="panel-card-header">
+              <h3 class="panel-title">Archived Vitals & ECG Classifications</h3>
+              <span class="badge badge-tag" id="history-records-count">Showing 6 Recorded Readings</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="medical-table">
+                <thead>
+                  <tr>
+                    <th>Record ID</th>
+                    <th>Date & Time</th>
+                    <th>Heart Rate</th>
+                    <th>SpO₂</th>
+                    <th>Temperature</th>
+                    <th>ECG Prediction</th>
+                    <th>Abnormal Prob</th>
+                    <th>Overall Status</th>
+                    <th>Report</th>
+                  </tr>
+                </thead>
+                <tbody id="full-history-table-body">
+                  <tr>
+                    <td class="mono">#HS-LOG-104</td>
+                    <td><strong>24 Aug 2026, 12:34 PM</strong></td>
+                    <td>72 bpm</td>
+                    <td>98.0 %</td>
+                    <td>36.6 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL</span></td>
+                    <td>0.89 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(0)">Report</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#HS-LOG-103</td>
+                    <td><strong>24 Aug 2026, 09:15 AM</strong></td>
+                    <td>74 bpm</td>
+                    <td>98.2 %</td>
+                    <td>36.7 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL</span></td>
+                    <td>1.12 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(1)">Report</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#HS-LOG-102</td>
+                    <td><strong>23 Aug 2026, 06:45 PM</strong></td>
+                    <td>88 bpm</td>
+                    <td>97.5 %</td>
+                    <td>36.8 °C</td>
+                    <td><span class="badge badge-sm badge-warning">ARRHYTHMIA (PVC)</span></td>
+                    <td>99.13 %</td>
+                    <td><span class="badge badge-sm badge-warning">Observed</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(2)">Report</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#HS-LOG-101</td>
+                    <td><strong>23 Aug 2026, 08:00 AM</strong></td>
+                    <td>70 bpm</td>
+                    <td>99.0 %</td>
+                    <td>36.5 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL</span></td>
+                    <td>0.75 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(3)">Report</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#HS-LOG-100</td>
+                    <td><strong>22 Aug 2026, 08:30 PM</strong></td>
+                    <td>76 bpm</td>
+                    <td>98.5 %</td>
+                    <td>36.6 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL</span></td>
+                    <td>0.94 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(4)">Report</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#HS-LOG-099</td>
+                    <td><strong>22 Aug 2026, 07:15 AM</strong></td>
+                    <td>68 bpm</td>
+                    <td>98.0 %</td>
+                    <td>36.4 °C</td>
+                    <td><span class="badge badge-sm badge-success">NORMAL</span></td>
+                    <td>0.62 %</td>
+                    <td><span class="badge badge-sm badge-success">Nominal</span></td>
+                    <td><button class="btn-table-action" onclick="window.viewReportModal(5)">Report</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             PAGE 6: SETTINGS
+             =================================================================== -->
+        <section id="settings-page" class="page-view">
+          
+          <div class="page-title-banner">
+            <div>
+              <h1 class="page-heading">Settings & Preferences</h1>
+              <p class="page-subheading">Manage patient account profile, sensor interfaces, notification parameters, and API configuration.</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            
+            <!-- Profile Settings -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="user" class="panel-icon text-primary-color"></i>
+                  <h3 class="panel-title">Patient Profile Information</h3>
+                </div>
+              </div>
+
+              <div class="settings-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="settings-name-input" value="Prajkta Patil">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Patient ID</label>
+                    <input type="text" class="form-control mono" value="#HS-1082" readonly>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" value="prajkta.patil@healthsense.org">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Contact Phone</label>
+                    <input type="tel" class="form-control" value="+91 98765 43210">
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control" value="24">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Gender</label>
+                    <select class="form-control">
+                      <option selected>Female</option>
+                      <option>Male</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" id="save-profile-btn">
+                  <i data-lucide="save"></i> Save Profile Changes
+                </button>
+              </div>
+            </div>
+
+            <!-- Connected Devices & Hardware Status -->
+            <div class="medical-panel-card">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="hard-drive" class="panel-icon text-cyan"></i>
+                  <h3 class="panel-title">Connected IoT Hardware Devices</h3>
+                </div>
+                <span class="badge badge-success">4 Devices Configured</span>
+              </div>
+
+              <div class="hardware-device-list">
+                <div class="device-item">
+                  <div class="device-icon-box"><i data-lucide="cpu"></i></div>
+                  <div class="device-meta">
+                    <strong>ESP32 Microcontroller Node</strong>
+                    <span>Wi-Fi / BLE Telemetry Gateway • ID: ESP32_NODE_01</span>
+                  </div>
+                  <span class="badge badge-sm badge-success">Online</span>
+                </div>
+
+                <div class="device-item">
+                  <div class="device-icon-box"><i data-lucide="activity"></i></div>
+                  <div class="device-meta">
+                    <strong>AD8232 ECG Sensor</strong>
+                    <span>Single-Lead MLII • 250/360 Hz Sampling</span>
+                  </div>
+                  <span class="badge badge-sm badge-success">Connected</span>
+                </div>
+
+                <div class="device-item">
+                  <div class="device-icon-box"><i data-lucide="droplet"></i></div>
+                  <div class="device-meta">
+                    <strong>MAX30102 Pulse Oximeter</strong>
+                    <span>Optical PPG (Heart Rate & SpO2)</span>
+                  </div>
+                  <span class="badge badge-sm badge-success">Connected</span>
+                </div>
+
+                <div class="device-item">
+                  <div class="device-icon-box"><i data-lucide="thermometer"></i></div>
+                  <div class="device-meta">
+                    <strong>DS18B20 Temperature Sensor</strong>
+                    <span>Digital 1-Wire Thermal Probe</span>
+                  </div>
+                  <span class="badge badge-sm badge-success">Connected</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- System & API Endpoints -->
+            <div class="medical-panel-card full-width">
+              <div class="panel-card-header">
+                <div class="header-left">
+                  <i data-lucide="server" class="panel-icon text-emerald"></i>
+                  <h3 class="panel-title">System & API Backend Integration</h3>
+                </div>
+              </div>
+
+              <div class="system-endpoints-table">
+                <div class="endpoint-row">
+                  <span class="method get">GET</span>
+                  <span class="url">/api/health</span>
+                  <span class="desc">System health check & active threshold status</span>
+                  <a href="/api/health" target="_blank" class="btn btn-sm btn-outline">Test</a>
+                </div>
+                <div class="endpoint-row">
+                  <span class="method get">GET</span>
+                  <span class="url">/api/ecg/model-info</span>
+                  <span class="desc">Verified 1D-CNN metadata & benchmark performance</span>
+                  <a href="/api/ecg/model-info" target="_blank" class="btn btn-sm btn-outline">Test</a>
+                </div>
+                <div class="endpoint-row">
+                  <span class="method post">POST</span>
+                  <span class="url">/api/ecg/predict</span>
+                  <span class="desc">256-sample ECG arrhythmia inference (Threshold = 0.30)</span>
+                  <a href="/docs" target="_blank" class="btn btn-sm btn-outline">Docs</a>
+                </div>
+                <div class="endpoint-row">
+                  <span class="method get">GET</span>
+                  <span class="url">/docs</span>
+                  <span class="desc">Interactive Swagger UI OpenAPI documentation</span>
+                  <a href="/docs" target="_blank" class="btn btn-sm btn-outline">Open</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- MEDICAL DISCLAIMER FOOTER -->
+      <footer class="app-medical-footer no-print">
+        <div class="footer-disclaimer-content">
+          <i data-lucide="alert-circle" class="footer-disclaimer-icon"></i>
+          <p class="footer-disclaimer-text">
+            <strong>Medical Disclaimer:</strong> HealthSense is an AI-assisted health monitoring and ECG analysis prototype intended for educational and research purposes. Results are not a medical diagnosis and should not replace evaluation by a qualified healthcare professional.
+          </p>
+        </div>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+    "model_type": "ResNet-1D-SE",
+    "input_shape": [
+        256,
+        1
+    ],
+    "num_classes": 2,
+    "classes": [
+        "NORMAL",
+        "ABNORMAL"
+    ],
+    "total_parameters": 154273,
+    "trainable_parameters": 152801,
+    "calibrated_threshold": 0.7000000000000002,
+    "training_epochs_run": 15,
+    "class_weights_used": {
+        "0": 0.6,
+        "1": 3.8
+    },
+    "validation_metrics": {
+        "best_val_f1": 0.8784893267651889,
+        "best_val_sensitivity": 0.8294573643410853,
+        "best_val_specificity": 0.9957964601769912
+    },
+    "test_metrics": {
+        "accuracy": 0.7144128113879004,
+        "precision": 0.399758535113019,
+        "recall_sensitivity": 0.43494125374005693,
+        "specificity": 0.8,
+        "f1_score": 0.4166084160492101,
+        "roc_auc": 0.6275931552647533,
+        "confusion_matrix": {
+            "tn": 35796,
+            "fp": 8949,
+            "fn": 7743,
+            "tp": 5960
+        }
+    }
+}
