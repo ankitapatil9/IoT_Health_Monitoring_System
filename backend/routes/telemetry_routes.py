@@ -1,14 +1,14 @@
 """
-HealthSense - Real-Time Telemetry & Simulation Routes
-Handles physical sensor packet ingestion, Server-Sent Events (SSE) streaming,
-and simulator controls.
+HealthSense - Real-Time Telemetry & Hardware Ingestion Gateway
+Handles physical ESP32 sensor packet ingestion, Server-Sent Events (SSE) streaming,
+and isolated simulation mode for testing.
 """
 
 import time
 import json
 import queue
 import threading
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from flask import Blueprint, request, jsonify, Response
 from backend.services.stream_processor import ECGStreamProcessor
 from backend.health_engine import HealthAssessmentEngine
@@ -21,18 +21,23 @@ telemetry_bp = Blueprint("telemetry_bp", __name__)
 health_engine = HealthAssessmentEngine()
 stream_processor = ECGStreamProcessor(buffer_size=1500, sampling_rate=250)
 
-# Global Telemetry Cache
+# Global Telemetry Cache - Starts with NULL vitals until physical ESP32 data arrives!
 latest_telemetry: Dict[str, Any] = {
     "device_id": "HEALTHSENSE_NODE_01",
     "timestamp": time.time(),
-    "heart_rate": 72.0,
-    "spo2": 98.0,
-    "temperature": 36.8,
-    "leads_off": False,
-    "ml_prediction": stream_processor.last_beat_prediction,
-    "assessment": health_engine.assess_health(72.0, 98.0, 36.8, stream_processor.last_beat_prediction),
+    "heart_rate": None,
+    "spo2": None,
+    "temperature": None,
+    "leads_off": True,
+    "sensor_status": {
+        "max30102": False,
+        "ds18b20": False,
+        "ad8232": False
+    },
+    "ml_prediction": None,
+    "assessment": health_engine.assess_health(None, None, None, None),
     "screening_summary": stream_processor.get_screening_summary(),
-    "source": "INITIALIZING"
+    "source": "AWAITING_TELEMETRY"
 }
 telemetry_lock = threading.Lock()
 
@@ -58,27 +63,58 @@ def broadcast_sse_event(event_type: str, data: Dict[str, Any]):
 
 def process_incoming_packet(packet: Dict[str, Any]):
     """
-    Central processing pipeline for both physical ESP32 and simulator packets.
+    Central ingestion pipeline for physical ESP32 telemetry packets.
+    Strictly handles null / unavailable sensor data.
     """
     global latest_telemetry
 
-    ecg_samples = packet.get("ecg_samples", [])
-    hr = packet.get("heart_rate")
+    ecg_samples = packet.get("ecg_samples") or packet.get("ecg") or []
+    hr = packet.get("heart_rate") if packet.get("heart_rate") is not None else packet.get("heartRate")
     spo2 = packet.get("spo2")
     temp = packet.get("temperature")
-    leads_off = packet.get("leads_off", False)
-    device_id = packet.get("device_id", "HEALTHSENSE_NODE")
+    leads_off = packet.get("leads_off") if packet.get("leads_off") is not None else packet.get("ecgLeadOff", False)
+    device_id = packet.get("device_id") or packet.get("deviceId") or "HS-ESP32-NODE"
+    sensor_status = packet.get("sensor_status", {
+        "max30102": (hr is not None and float(hr) > 0 if isinstance(hr, (int, float)) else False),
+        "ds18b20": (temp is not None and float(temp) > 0 if isinstance(temp, (int, float)) else False),
+        "ad8232": not leads_off
+    })
 
-    # Ingest ECG samples into sliding window buffer
-    if ecg_samples:
+    # Validate numbers (convert -127, negative numbers, or invalid inputs to None)
+    if hr is not None:
+        try:
+            hr = float(hr)
+            if hr <= 0 or hr > 250:
+                hr = None
+        except (ValueError, TypeError):
+            hr = None
+
+    if spo2 is not None:
+        try:
+            spo2 = float(spo2)
+            if spo2 <= 0 or spo2 > 100:
+                spo2 = None
+        except (ValueError, TypeError):
+            spo2 = None
+
+    if temp is not None:
+        try:
+            temp = float(temp)
+            if temp <= 0 or temp < 20.0 or temp > 50.0:  # -127°C or invalid DS18B20 reading
+                temp = None
+        except (ValueError, TypeError):
+            temp = None
+
+    # Ingest ECG samples if present and leads are connected
+    ml_result = None
+    if ecg_samples and not leads_off:
         stream_processor.ingest_samples(ecg_samples)
+        ml_result = stream_processor.detect_and_classify_beats()
 
-    # Trigger beat detection & ML inference
-    ml_result = stream_processor.detect_and_classify_beats()
     if ml_result is None:
-        ml_result = stream_processor.last_beat_prediction
+        ml_result = stream_processor.last_beat_prediction if stream_processor.total_beats_evaluated > 0 else None
 
-    # Multi-parameter assessment
+    # Synthesize health assessment
     assessment = health_engine.assess_health(
         heart_rate=hr,
         spo2=spo2,
@@ -95,6 +131,7 @@ def process_incoming_packet(packet: Dict[str, Any]):
             "spo2": spo2,
             "temperature": temp,
             "leads_off": leads_off,
+            "sensor_status": sensor_status,
             "ml_prediction": ml_result,
             "assessment": assessment,
             "screening_summary": screening_summary,
@@ -109,6 +146,7 @@ def process_incoming_packet(packet: Dict[str, Any]):
         "spo2": spo2,
         "temperature": temp,
         "leads_off": leads_off,
+        "sensor_status": sensor_status,
         "ecg_points": ecg_samples,
         "waveform": waveform_snapshot,
         "ml_prediction": ml_result,
@@ -118,13 +156,14 @@ def process_incoming_packet(packet: Dict[str, Any]):
     broadcast_sse_event("telemetry", broadcast_data)
 
 
-# Instantiate Simulator
+# Simulator instance available for isolated DEV mode testing only
 simulator = TelemetrySimulator(sample_rate=250, on_packet_callback=process_incoming_packet)
 
 
 @telemetry_bp.route("/api/telemetry", methods=["POST"])
+@telemetry_bp.route("/api/device/data", methods=["POST"])
 def ingest_telemetry():
-    """Ingestion endpoint for physical ESP32 or external sources."""
+    """Ingestion endpoint for physical ESP32 devices."""
     if not request.is_json:
         return error_response("Content-Type must be application/json", status_code=400)
 
@@ -137,8 +176,9 @@ def ingest_telemetry():
 
 
 @telemetry_bp.route("/api/latest", methods=["GET"])
+@telemetry_bp.route("/api/health/latest", methods=["GET"])
 def get_latest_telemetry():
-    """Returns the most recent physiological readings, ML predictions, and assessment."""
+    """Returns recent physical telemetry snapshot, ML predictions, and assessment."""
     with telemetry_lock:
         snapshot = dict(latest_telemetry)
         snapshot["waveform"] = stream_processor.get_latest_waveform_snapshot(max_points=500)
@@ -147,7 +187,7 @@ def get_latest_telemetry():
 
 @telemetry_bp.route("/api/stream", methods=["GET"])
 def stream_sse():
-    """Server-Sent Events (SSE) continuous stream for the real-time frontend dashboard."""
+    """Server-Sent Events (SSE) continuous stream for the frontend web dashboard."""
     def event_generator():
         client_queue = queue.Queue(maxsize=100)
         with sse_lock:
@@ -183,6 +223,7 @@ def stream_sse():
 
 @telemetry_bp.route("/api/simulation/start", methods=["POST"])
 def start_simulation():
+    """Isolated simulation mode start trigger (for dev/test validation)."""
     req_json = request.get_json(silent=True) or {}
     scenario = req_json.get("scenario", "normal_sinus")
     simulator.set_scenario(scenario)
@@ -197,24 +238,3 @@ def start_simulation():
 def stop_simulation():
     simulator.stop()
     return success_response({"status": "stopped"})
-
-
-@telemetry_bp.route("/api/simulation/scenario", methods=["POST"])
-def switch_simulation_scenario():
-    req_json = request.get_json(silent=True) or {}
-    scenario = req_json.get("scenario", "")
-    if simulator.set_scenario(scenario):
-        return success_response({
-            "status": "success",
-            "scenario": simulator.get_current_scenario_info()
-        })
-    return error_response(f"Invalid scenario '{scenario}'. Available: {list(simulator.SCENARIOS.keys())}", status_code=400)
-
-
-@telemetry_bp.route("/api/simulation/status", methods=["GET"])
-def simulation_status():
-    return success_response({
-        "is_running": simulator.is_running,
-        "current_scenario": simulator.get_current_scenario_info(),
-        "available_scenarios": simulator.SCENARIOS
-    })

@@ -846,32 +846,53 @@ function updateTelemetryUI(data) {
     appState.liveBuffer = data.waveform.filtered;
   }
 
-  // 2. Update Vitals
-  if (data.heart_rate !== null && data.heart_rate !== undefined) {
+  // 2. Update Vitals with strict Real Hardware NULL checking
+  if (data.heart_rate !== null && data.heart_rate !== undefined && data.heart_rate > 0) {
     const hr = Math.round(data.heart_rate);
     appState.currentVitals.heartRate = hr;
     if (DOM.liveHrNumber) DOM.liveHrNumber.textContent = hr;
     if (DOM.dashHrVal) DOM.dashHrVal.textContent = hr;
-    if (DOM.rptHrVal) DOM.rptHrVal.textContent = hr;
+    if (DOM.rptHrVal) DOM.rptHrVal.textContent = `${hr} BPM`;
+  } else {
+    appState.currentVitals.heartRate = null;
+    if (DOM.liveHrNumber) DOM.liveHrNumber.textContent = '--';
+    if (DOM.dashHrVal) DOM.dashHrVal.textContent = '--';
+    if (DOM.rptHrVal) DOM.rptHrVal.textContent = 'Sensor Not Connected';
   }
 
-  if (data.spo2 !== null && data.spo2 !== undefined) {
+  if (data.spo2 !== null && data.spo2 !== undefined && data.spo2 > 0) {
     const spo2 = parseFloat(data.spo2).toFixed(1);
     appState.currentVitals.spo2 = spo2;
     if (DOM.liveSpo2Number) DOM.liveSpo2Number.textContent = spo2;
     if (DOM.dashSpo2Val) DOM.dashSpo2Val.textContent = Math.round(data.spo2);
-    if (DOM.rptSpo2Val) DOM.rptSpo2Val.textContent = spo2;
+    if (DOM.rptSpo2Val) DOM.rptSpo2Val.textContent = `${spo2}%`;
+  } else {
+    appState.currentVitals.spo2 = null;
+    if (DOM.liveSpo2Number) DOM.liveSpo2Number.textContent = '--';
+    if (DOM.dashSpo2Val) DOM.dashSpo2Val.textContent = '--';
+    if (DOM.rptSpo2Val) DOM.rptSpo2Val.textContent = 'Sensor Not Connected';
   }
 
-  if (data.temperature !== null && data.temperature !== undefined) {
+  if (data.temperature !== null && data.temperature !== undefined && data.temperature > 0) {
     const temp = parseFloat(data.temperature).toFixed(1);
     appState.currentVitals.temperature = temp;
     if (DOM.liveTempNumber) DOM.liveTempNumber.textContent = temp;
     if (DOM.dashTempVal) DOM.dashTempVal.textContent = temp;
-    if (DOM.rptTempVal) DOM.rptTempVal.textContent = temp;
+    if (DOM.rptTempVal) DOM.rptTempVal.textContent = `${temp} °C`;
+  } else {
+    appState.currentVitals.temperature = null;
+    if (DOM.liveTempNumber) DOM.liveTempNumber.textContent = '--';
+    if (DOM.dashTempVal) DOM.dashTempVal.textContent = '--';
+    if (DOM.rptTempVal) DOM.rptTempVal.textContent = 'Sensor Not Connected';
   }
 
-  if (data.ml_prediction && DOM.liveEcgRhythm) {
+  // 3. Leads off / ECG Sensor Status
+  if (data.leads_off) {
+    if (DOM.liveEcgRhythm) {
+      DOM.liveEcgRhythm.textContent = 'ECG Sensor Not Connected / Leads Off';
+      DOM.liveEcgRhythm.className = 'metric-status-title text-amber';
+    }
+  } else if (data.ml_prediction && DOM.liveEcgRhythm) {
     const isAb = data.ml_prediction.is_abnormal;
     DOM.liveEcgRhythm.textContent = isAb ? 'Arrhythmia / Ectopic' : 'Normal Sinus';
     DOM.liveEcgRhythm.className = isAb ? 'metric-status-title text-rose' : 'metric-status-title text-emerald';
@@ -1129,6 +1150,43 @@ function setupEventListeners() {
         }
       } catch (err) {
         alert(`Invalid JSON format: ${err.message}`);
+      }
+    });
+  }
+
+  // PDF Medical Report Generator
+  if (DOM.downloadReportPdfBtn) {
+    DOM.downloadReportPdfBtn.addEventListener('click', async () => {
+      try {
+        const payload = {
+          patient_id: appState.patientId || 'PNT-2026-0001',
+          patient_name: appState.patientName || 'Prajkta Patil',
+          device_id: 'HS-ESP32-HARDWARE',
+          heart_rate: appState.currentVitals.heartRate,
+          spo2: appState.currentVitals.spo2,
+          temperature: appState.currentVitals.temperature,
+          ecg_result: appState.lastPrediction
+        };
+
+        const res = await fetch('/api/report/generate?format=html', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const htmlText = await res.text();
+          const printWindow = window.open('', '_blank');
+          printWindow.document.write(htmlText);
+          printWindow.document.close();
+          setTimeout(() => {
+            printWindow.print();
+          }, 500);
+        } else {
+          alert('Failed to generate report.');
+        }
+      } catch (err) {
+        alert(`Report generation error: ${err.message}`);
       }
     });
   }

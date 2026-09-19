@@ -44,6 +44,50 @@ def init_user_db() -> None:
             )
         """)
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS devices (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                device_id TEXT UNIQUE NOT NULL,
+                device_name TEXT,
+                mac_address TEXT,
+                status TEXT DEFAULT 'ACTIVE',
+                registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_seen TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS telemetry_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                device_id TEXT NOT NULL,
+                timestamp REAL NOT NULL,
+                heart_rate REAL,
+                spo2 REAL,
+                temperature REAL,
+                leads_off INTEGER DEFAULT 0,
+                max30102_status INTEGER DEFAULT 1,
+                ds18b20_status INTEGER DEFAULT 1,
+                ad8232_status INTEGER DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS recording_sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT UNIQUE NOT NULL,
+                device_id TEXT NOT NULL,
+                patient_id TEXT,
+                start_time REAL NOT NULL,
+                end_time REAL,
+                sample_count INTEGER DEFAULT 0,
+                ecg_data_json TEXT,
+                ml_prediction_json TEXT,
+                health_assessment_json TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         # Check if any users exist; if not, seed default demo user
         cursor.execute("SELECT COUNT(*) FROM users")
         count = cursor.fetchone()[0]

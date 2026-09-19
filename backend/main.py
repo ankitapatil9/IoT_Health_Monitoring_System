@@ -19,8 +19,10 @@ if PROJECT_ROOT not in sys.path:
 from backend.routes.health_routes import health_bp
 from backend.routes.ecg_routes import ecg_bp
 from backend.routes.docs_routes import docs_bp
-from backend.routes.telemetry_routes import telemetry_bp, simulator
+from backend.routes.telemetry_routes import telemetry_bp
 from backend.routes.auth_routes import auth_bp
+from backend.routes.device_routes import device_bp
+from backend.routes.report_routes import report_bp
 from backend.services.user_service import init_user_db
 
 
@@ -51,6 +53,8 @@ def create_app() -> Flask:
     app.register_blueprint(docs_bp)
     app.register_blueprint(telemetry_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(device_bp)
+    app.register_blueprint(report_bp)
 
     # Static frontend routing
     @app.route("/", methods=["GET"])
@@ -63,7 +67,9 @@ def create_app() -> Flask:
             "docs": "/docs",
             "health": "/api/health",
             "predict": "/api/ecg/predict",
-            "auth": "/api/auth/me"
+            "auth": "/api/auth/me",
+            "device": "/api/device/status",
+            "report": "/api/report/generate"
         })
 
     @app.route("/<path:path>", methods=["GET"])
@@ -113,8 +119,9 @@ if __name__ == "__main__":
     print("ECG Predict       : http://127.0.0.1:5000/api/ecg/predict")
     print("Auth Register     : http://127.0.0.1:5000/api/auth/register")
     print("Auth Login        : http://127.0.0.1:5000/api/auth/login")
+    print("Device API        : http://127.0.0.1:5000/api/device/status")
+    print("Report Generator  : http://127.0.0.1:5000/api/report/generate")
     print("=" * 80)
+    print("[SERVER MODE] Real Hardware Telemetry Ingestion Active.")
     
-    # Auto-start simulator in background
-    simulator.start()
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
